@@ -43,6 +43,6 @@ linkQt(${Target_Name} Core . ${QT_QTCORE_LIBRARY})
 
 
 set_target_properties(${Target_Name} PROPERTIES
-                        PUBLIC_HEADER "Error.hpp;String.hpp")
+                        PUBLIC_HEADER "Error.hpp;String.hpp;Validation.hpp")
 
 message(</${Target_Name}>)
