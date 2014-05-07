@@ -19,6 +19,7 @@
 # ifndef QT_CORE_UTILITIES_ERROR_HPP
 # define QT_CORE_UTILITIES_ERROR_HPP
 
+# include <QByteArray>
 # include <QString>
 
 # include <stdexcept>
@@ -26,18 +27,11 @@
 
 namespace QtUtilities
 {
-class Error : public std::exception
+class Error : public std::runtime_error
 {
 public:
-    explicit Error(const QString & sWhat);
-
-    ~Error() noexcept override {}
-
-    const QString & message() const noexcept { return message_; }
-    const char * what() const noexcept override;
-
-protected:
-    QString message_;
+    explicit Error(const QString & sWhat)
+        : std::runtime_error(sWhat.toUtf8().constData()) {}
 };
 
 }

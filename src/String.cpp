@@ -38,7 +38,7 @@ std::string to<std::string>(const QString & qStr)
 {
     QByteArray byteArray = qStr.toUtf8();
     const std::size_t bytes = byteArray.size();
-    return std::string(byteArray.data(), bytes);
+    return std::string(byteArray.constData(), bytes);
 }
 
 namespace

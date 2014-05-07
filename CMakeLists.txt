@@ -32,7 +32,7 @@ include_directories(
 )
 
 set(Sources
-    ${Sources_Path}/Error.cpp ${Sources_Path}/String.cpp
+    ${Sources_Path}/String.cpp
 )
 
 
