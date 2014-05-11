@@ -24,6 +24,8 @@
 
 # include <cstddef>
 # include <limits>
+# include <string>
+# include <stdexcept>
 
 
 namespace QtUtilities
@@ -41,14 +43,29 @@ std::string to<std::string>(const QString & qStr)
     return std::string(byteArray.constData(), bytes);
 }
 
+
 namespace
 {
+const QString invalidStringMessage = QObject::tr("invalid %1 string.");
+
 StringError makeError(const QString & type)
 {
-    return StringError(QObject::tr("invalid %1 string.").arg(type));
+    return StringError(invalidStringMessage.arg(type));
+}
+
+template <typename Number, typename QStringToNumber>
+Number qStringToNumber(const QString & numberTypeName,
+                       QStringToNumber converter)
+{
+    bool ok;
+    const Number result = converter(& ok);
+    if (! ok)
+        throw makeError(numberTypeName);
+    return result;
 }
 
 }
+
 
 template <>
 bool to<bool>(const QString & str)
@@ -57,38 +74,61 @@ bool to<bool>(const QString & str)
         return false;
     if (str == trueString)
         return true;
-    throw makeError("bool");
+    throw StringError(
+        invalidStringMessage.arg("bool") +
+        QObject::tr(" \"%1\" or \"%2\" expected but \"%3\" found.").
+        arg(falseString, trueString, str));
+}
+
+
+template <>
+signed char to<signed char>(const QString & str)
+{
+    bool ok;
+    const short result = str.toShort(& ok);
+    if (! ok || result < std::numeric_limits<signed char>::min() ||
+            result > std::numeric_limits<signed char>::max()) {
+        throw makeError("signed char");
+    }
+    return result;
+}
+
+template <>
+short to<short>(const QString & str)
+{
+    return qStringToNumber<short>("short",
+    [& str](bool * ok) {
+        return str.toShort(ok);
+    });
 }
 
 template <>
 int to<int>(const QString & str)
 {
-    bool ok;
-    const int result = str.toInt(& ok);
-    if (! ok)
-        throw makeError("int");
-    return result;
+    return qStringToNumber<int>("int",
+    [& str](bool * ok) {
+        return str.toInt(ok);
+    });
 }
 
 template <>
 long to<long>(const QString & str)
 {
-    bool ok;
-    const long result = str.toLong(& ok);
-    if (! ok)
-        throw makeError("long");
-    return result;
+    return qStringToNumber<long>("long",
+    [& str](bool * ok) {
+        return str.toLong(ok);
+    });
 }
 
 template <>
 long long to<long long>(const QString & str)
 {
-    bool ok;
-    const long long result = str.toLongLong(& ok);
-    if (! ok)
-        throw makeError("long long");
-    return result;
+    return qStringToNumber<long long>("long long",
+    [& str](bool * ok) {
+        return str.toLongLong(ok);
+    });
 }
+
 
 template <>
 unsigned char to<unsigned char>(const QString & str)
@@ -103,41 +143,73 @@ unsigned char to<unsigned char>(const QString & str)
 template <>
 unsigned short to<unsigned short>(const QString & str)
 {
-    bool ok;
-    const unsigned short result = str.toUShort(& ok);
-    if (! ok)
-        throw makeError("unsigned short");
-    return result;
+    return qStringToNumber<unsigned short>("unsigned short",
+    [& str](bool * ok) {
+        return str.toUShort(ok);
+    });
 }
 
 template <>
 unsigned int to<unsigned int>(const QString & str)
 {
-    bool ok;
-    const unsigned int result = str.toUInt(& ok);
-    if (! ok)
-        throw makeError("unsigned int");
-    return result;
+    return qStringToNumber<unsigned int>("unsigned int",
+    [& str](bool * ok) {
+        return str.toUInt(ok);
+    });
 }
 
 template <>
 unsigned long to<unsigned long>(const QString & str)
 {
-    bool ok;
-    const unsigned long result = str.toULong(& ok);
-    if (! ok)
-        throw makeError("unsigned long");
-    return result;
+    return qStringToNumber<unsigned long>("unsigned long",
+    [& str](bool * ok) {
+        return str.toULong(ok);
+    });
 }
 
 template <>
 unsigned long long to<unsigned long long>(const QString & str)
 {
-    bool ok;
-    const unsigned long long result = str.toULongLong(& ok);
-    if (! ok)
-        throw makeError("unsigned long long");
-    return result;
+    return qStringToNumber<unsigned long long>("unsigned long long",
+    [& str](bool * ok) {
+        return str.toULongLong(ok);
+    });
+}
+
+
+template <>
+float to<float>(const QString & str)
+{
+    return qStringToNumber<float>("float",
+    [& str](bool * ok) {
+        return str.toFloat(ok);
+    });
+}
+
+template <>
+double to<double>(const QString & str)
+{
+    return qStringToNumber<double>("double",
+    [& str](bool * ok) {
+        return str.toDouble(ok);
+    });
+}
+
+template <>
+long double to<long double>(const QString & str)
+{
+    try {
+        const std::string s = to<std::string>(str);
+        std::size_t index;
+        const long double result = std::stold(s, & index);
+        if (index != s.size())
+            throw std::invalid_argument("Extra symbols at the end of string.");
+        return result;
+    }
+    catch (const std::logic_error & error) {
+        throw StringError(invalidStringMessage.arg("long double") +
+                          ' ' + error.what());
+    }
 }
 
 }

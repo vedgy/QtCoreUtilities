@@ -28,33 +28,30 @@
 namespace QtUtilities
 {
 template <typename Number>
-void checkMinValue(const QString & name, Number value, Number minValue)
+void checkMinValue(Number value, Number minValue)
 {
     if (value < minValue) {
         throw Error(
-            name +
-            QObject::tr(" is less than minimum allowed value (%1 < %2).").
+            QObject::tr("less than minimum allowed value (%1 < %2).").
             arg(value).arg(minValue));
     }
 }
 
 template <typename Number>
-void checkMaxValue(const QString & name, Number value, Number maxValue)
+void checkMaxValue(Number value, Number maxValue)
 {
     if (value > maxValue) {
         throw Error(
-            name +
-            QObject::tr(" is greater than maximum allowed value (%1 > %2).").
+            QObject::tr("greater than maximum allowed value (%1 > %2).").
             arg(value).arg(maxValue));
     }
 }
 
 template <typename Number>
-void checkRange(const QString & name, Number value,
-                Number minValue, Number maxValue)
+void checkRange(Number value, Number minValue, Number maxValue)
 {
-    checkMinValue<Number>(name, value, minValue);
-    checkMaxValue<Number>(name, value, maxValue);
+    checkMinValue<Number>(value, minValue);
+    checkMaxValue<Number>(value, maxValue);
 }
 
 }

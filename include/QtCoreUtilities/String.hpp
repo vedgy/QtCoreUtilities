@@ -29,7 +29,7 @@
 
 namespace QtUtilities
 {
-inline std::string qStringToString(const QString & qStr);
+std::string qStringToString(const QString & qStr);
 
 
 extern const QString falseString, trueString;
@@ -43,6 +43,11 @@ inline QString toQString(const std::string & str)
 inline QString toQString(bool value)
 {
     return value ? trueString : falseString;
+}
+
+inline QString toQString(long double value)
+{
+    return toQString(std::to_string(value));
 }
 
 template <typename Number>
@@ -63,20 +68,30 @@ public:
 namespace ConvertQString
 {
 template <typename T> T to(const QString & str);
+
 template <> std::string to<std::string>(const QString & str);
+
 template <> bool to<bool>(const QString & str);
+
+template <> signed char to<signed char>(const QString & str);
+template <> short to<short>(const QString & str);
 template <> int to<int>(const QString & str);
 template <> long to<long>(const QString & str);
 template <> long long to<long long>(const QString & str);
+
 template <> unsigned char to<unsigned char>(const QString & str);
 template <> unsigned short to<unsigned short>(const QString & str);
 template <> unsigned int to<unsigned int>(const QString & str);
 template <> unsigned long to<unsigned long>(const QString & str);
 template <> unsigned long long to<unsigned long long>(const QString & str);
 
+template <> float to<float>(const QString & str);
+template <> double to<double>(const QString & str);
+template <> long double to<long double>(const QString & str);
+
 }
 
-std::string qStringToString(const QString & qStr)
+inline std::string qStringToString(const QString & qStr)
 {
     return ConvertQString::to<std::string>(qStr);
 }
