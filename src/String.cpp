@@ -30,7 +30,14 @@
 
 namespace QtUtilities
 {
-const QString falseString = "0", trueString = "1";
+# ifndef QT_UTILITIES_FALSE_STRING
+# define QT_UTILITIES_FALSE_STRING "0"
+# endif
+# ifndef QT_UTILITIES_TRUE_STRING
+# define QT_UTILITIES_TRUE_STRING "1"
+# endif
+const QString falseString = QT_UTILITIES_FALSE_STRING,
+              trueString = QT_UTILITIES_TRUE_STRING;
 
 
 namespace ConvertQString

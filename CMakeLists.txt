@@ -24,6 +24,34 @@ include(vedgTools/LibraryFindQt)
 libraryFindQt(Qt5Core . QTCORE)
 
 
+# If you want to override default bool strings ("0" and "1") that are used in
+# String conversions, set properties QtUtilities_False_String and
+# QtUtilities_True_String BEFORE including (adding subdirectory)
+# QtCoreUtilities. For example:
+# * in library that uses QtCoreUtilities:
+# set_property(GLOBAL PROPERTY QtUtilities_False_String "false")
+# set_property(GLOBAL PROPERTY QtUtilities_True_String "true")
+# set(PATH_TO_QT_CORE_UTILITIES modules/vedgTools/QtCoreUtilities)
+# include(vedgTools/LibraryGetQtCoreUtilitiesPublicHeaders)
+# * in executable that uses QtCoreUtilities:
+# set_property(GLOBAL PROPERTY QtUtilities_False_String "F")
+# set_property(GLOBAL PROPERTY QtUtilities_True_String "T")
+# add_subdirectory(modules/vedgTools/QtCoreUtilities)
+# executableGetPublicHeadersProperty(QtCoreUtilities)
+include(vedgTools/GetGlobalProperty)
+getGlobalProperty(QtUtilities_False_String "0")
+getGlobalProperty(QtUtilities_True_String "1")
+add_definitions(
+    -DQT_UTILITIES_FALSE_STRING=\"${QtUtilities_False_String}\"
+    -DQT_UTILITIES_TRUE_STRING=\"${QtUtilities_True_String}\"
+)
+message("QtUtilities_False_String = \"${QtUtilities_False_String}\"")
+message("QtUtilities_True_String = \"${QtUtilities_True_String}\"")
+if(QtUtilities_False_String STREQUAL QtUtilities_True_String)
+    message(FATAL_ERROR "False_String must not be equal to True_String!")
+endif()
+
+
 set(Sources_Path src)
 
 include_directories(
