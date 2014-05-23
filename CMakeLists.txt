@@ -8,21 +8,14 @@ message(<${Target_Name}>)
 ## vedgTools/CMakeModules path boilerplate.
 include(vedgTools/CMakeLicense OPTIONAL RESULT_VARIABLE CMakeModulesWasIncluded)
 if(CMakeModulesWasIncluded STREQUAL NOTFOUND)
-    set(CMAKE_MODULE_PATH
-            "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
+    set(PATH_TO_CMAKE_MODULES ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PATH_TO_CMAKE_MODULES})
     message("Including CMakeModules.")
     include(vedgTools/CMakeLicense)
 endif()
 
 # NOTE: QtCore is the only module, used by this library.
 include(vedgTools/LibraryQtStart)
-
-include(vedgTools/LibraryWithQtInit)
-
-
-include(vedgTools/LibraryFindQt)
-libraryFindQt(Qt5Core . QTCORE)
-
 
 # If you want to override default bool strings ("0" and "1") that are used in
 # String conversions, set properties QtUtilities_False_String and
@@ -51,6 +44,12 @@ if(QtUtilities_False_String STREQUAL QtUtilities_True_String)
     message(FATAL_ERROR "False_String must not be equal to True_String!")
 endif()
 
+include(vedgTools/LibraryWithQtInit)
+
+
+include(vedgTools/LibraryWithTestsFindQt)
+libraryWithTestsFindQt(Qt5Core . QTCORE)
+
 
 set(Sources_Path src)
 
@@ -72,5 +71,16 @@ linkQt(${Target_Name} Core . ${QT_QTCORE_LIBRARY})
 
 set_target_properties(${Target_Name} PROPERTIES
                         PUBLIC_HEADER "Error.hpp;String.hpp;Validation.hpp")
+
+
+if(ENABLE_TESTING)
+    include(vedgTools/EnableAutomoc)
+    include_directories(${PATH_TO_CMAKE_MODULES}/include)
+
+    include(vedgTools/LibraryAddTest)
+    libraryAddTest("StringTest" test/StringTest.cpp ${Target_Name})
+    libraryAddTest("ValidationTest" test/ValidationTest.cpp "")
+endif()
+
 
 message(</${Target_Name}>)

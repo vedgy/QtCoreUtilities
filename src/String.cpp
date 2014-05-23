@@ -36,8 +36,17 @@ namespace QtUtilities
 # ifndef QT_UTILITIES_TRUE_STRING
 # define QT_UTILITIES_TRUE_STRING "1"
 # endif
-const QString falseString = QT_UTILITIES_FALSE_STRING,
-              trueString = QT_UTILITIES_TRUE_STRING;
+
+const QString & falseString()
+{
+    static const QString s = QT_UTILITIES_FALSE_STRING;
+    return s;
+}
+const QString & trueString()
+{
+    static const QString s = QT_UTILITIES_TRUE_STRING;
+    return s;
+}
 
 
 namespace ConvertQString
@@ -45,7 +54,7 @@ namespace ConvertQString
 template <>
 std::string to<std::string>(const QString & qStr)
 {
-    QByteArray byteArray = qStr.toUtf8();
+    const QByteArray byteArray = qStr.toUtf8();
     const std::size_t bytes = byteArray.size();
     return std::string(byteArray.constData(), bytes);
 }
@@ -53,11 +62,15 @@ std::string to<std::string>(const QString & qStr)
 
 namespace
 {
-const QString invalidStringMessage = QObject::tr("invalid %1 string.");
+const QString & invalidStringMessage()
+{
+    static const QString s = QObject::tr("invalid %1 string");
+    return s;
+}
 
 StringError makeError(const QString & type)
 {
-    return StringError(invalidStringMessage.arg(type));
+    return StringError(invalidStringMessage().arg(type) + '.');
 }
 
 template <typename Number, typename QStringToNumber>
@@ -77,14 +90,14 @@ Number qStringToNumber(const QString & numberTypeName,
 template <>
 bool to<bool>(const QString & str)
 {
-    if (str == falseString)
+    if (str == falseString())
         return false;
-    if (str == trueString)
+    if (str == trueString())
         return true;
     throw StringError(
-        invalidStringMessage.arg("bool") +
-        QObject::tr(" \"%1\" or \"%2\" expected but \"%3\" found.").
-        arg(falseString, trueString, str));
+        invalidStringMessage().arg("bool") +
+        QObject::tr(". \"%1\" or \"%2\" expected but \"%3\" found.").
+        arg(falseString(), trueString(), str));
 }
 
 
@@ -210,12 +223,12 @@ long double to<long double>(const QString & str)
         std::size_t index;
         const long double result = std::stold(s, & index);
         if (index != s.size())
-            throw std::invalid_argument("Extra symbols at the end of string.");
+            throw std::invalid_argument("extra symbols at the end of string");
         return result;
     }
     catch (const std::logic_error & error) {
-        throw StringError(invalidStringMessage.arg("long double") +
-                          ' ' + error.what());
+        throw StringError(invalidStringMessage().arg("long double") +
+                          " (" + error.what() + ").");
     }
 }
 

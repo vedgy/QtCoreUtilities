@@ -32,7 +32,8 @@ namespace QtUtilities
 std::string qStringToString(const QString & qStr);
 
 
-extern const QString falseString, trueString;
+const QString & falseString();
+const QString & trueString();
 
 
 inline QString toQString(const std::string & str)
@@ -42,7 +43,7 @@ inline QString toQString(const std::string & str)
 
 inline QString toQString(bool value)
 {
-    return value ? trueString : falseString;
+    return value ? trueString() : falseString();
 }
 
 inline QString toQString(long double value)
@@ -102,6 +103,7 @@ inline QString byteArrayToQString(const QByteArray & byteArray)
     return QString::fromLatin1(byteArray.toBase64());
 }
 
+/// @param string Must be Base64-encoded.
 inline QByteArray qStringToByteArray(const QString & string)
 {
     return QByteArray::fromBase64(string.toLatin1());
