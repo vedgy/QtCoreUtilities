@@ -74,7 +74,7 @@ set_target_properties(${Target_Name} PROPERTIES
 
 
 if(ENABLE_TESTING)
-    include(vedgTools/EnableAutomoc)
+    include(vedgTools/EnableAutomocInSources)
     include_directories(${PATH_TO_CMAKE_MODULES}/include)
 
     include(vedgTools/LibraryAddTest)
