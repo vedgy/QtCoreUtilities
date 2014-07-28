@@ -59,7 +59,7 @@ include_directories(
 )
 
 set(Sources
-    ${Sources_Path}/String.cpp
+    ${Sources_Path}/String.cpp ${Sources_Path}/Miscellaneous.cpp
 )
 
 
@@ -69,8 +69,8 @@ include(vedgTools/LinkQt)
 linkQt(${Target_Name} Core . ${QT_QTCORE_LIBRARY})
 
 
-set_target_properties(${Target_Name} PROPERTIES
-                        PUBLIC_HEADER "Error.hpp;String.hpp;Validation.hpp")
+set_target_properties(${Target_Name} PROPERTIES PUBLIC_HEADER
+    "Error.hpp;String.hpp;Validation.hpp;Miscellaneous.hpp")
 
 
 if(ENABLE_TESTING)
