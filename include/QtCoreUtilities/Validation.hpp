@@ -69,6 +69,13 @@ void checkRange(const T & value, const T & minValue, const T & maxValue)
     checkMaxValue(value, maxValue);
 }
 
+template <typename T>
+void checkRange0Allowed(const T & value, const T & minValue, const T & maxValue)
+{
+    if (value != T(0))
+        checkRange(value, minValue, maxValue);
+}
+
 }
 
 # endif // QT_CORE_UTILITIES_VALIDATION_HPP
