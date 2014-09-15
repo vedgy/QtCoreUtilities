@@ -49,23 +49,24 @@ const QString & trueString()
 }
 
 
+StringError::~StringError() noexcept = default;
+
 namespace ConvertQString
 {
 template <>
 std::string to<std::string>(const QString & qStr)
 {
     const QByteArray byteArray = qStr.toUtf8();
-    const std::size_t bytes = byteArray.size();
+    const std::size_t bytes = std::size_t(byteArray.size());
     return std::string(byteArray.constData(), bytes);
 }
 
 
 namespace
 {
-const QString & invalidStringMessage()
+QString invalidStringMessage()
 {
-    static const QString s = QObject::tr("invalid %1 string");
-    return s;
+    return QObject::tr("invalid %1 string");
 }
 
 StringError makeError(const QString & type)
@@ -110,7 +111,7 @@ signed char to<signed char>(const QString & str)
             result > std::numeric_limits<signed char>::max()) {
         throw makeError("signed char");
     }
-    return result;
+    return (signed char)result;
 }
 
 template <>
@@ -157,7 +158,7 @@ unsigned char to<unsigned char>(const QString & str)
     const unsigned short result = str.toUShort(& ok);
     if (! ok || result > std::numeric_limits<unsigned char>::max())
         throw makeError("unsigned char");
-    return result;
+    return (unsigned char)result;
 }
 
 template <>

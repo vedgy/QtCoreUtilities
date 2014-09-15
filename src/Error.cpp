@@ -16,28 +16,10 @@
  vedgTools/QtCoreUtilities.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-# ifndef QT_CORE_UTILITIES_ERROR_HPP
-# define QT_CORE_UTILITIES_ERROR_HPP
-
-# include <CommonUtilities/CopyAndMoveSemantics.hpp>
-
-# include <QByteArray>
-# include <QString>
-
-# include <stdexcept>
+# include "Error.hpp"
 
 
 namespace QtUtilities
 {
-class Error : public std::runtime_error
-{
-public:
-    explicit Error(const QString & sWhat)
-        : std::runtime_error(sWhat.toUtf8().constData()) {}
-    COPYABLE_AND_MOVABLE(Error)
-    ~Error() noexcept override;
-};
-
+Error::~Error() noexcept = default;
 }
-
-# endif // QT_CORE_UTILITIES_ERROR_HPP

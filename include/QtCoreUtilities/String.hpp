@@ -21,6 +21,8 @@
 
 # include "Error.hpp"
 
+# include <CommonUtilities/CopyAndMoveSemantics.hpp>
+
 # include <QByteArray>
 # include <QString>
 
@@ -38,7 +40,7 @@ const QString & trueString();
 
 inline QString toQString(const std::string & str)
 {
-    return QString::fromUtf8(str.data(), str.size());
+    return QString::fromUtf8(str.data(), static_cast<int>(str.size()));
 }
 
 inline QString toQString(bool value)
@@ -62,6 +64,8 @@ class StringError : public Error
 {
 public:
     explicit StringError(const QString & sWhat) : Error(sWhat) {}
+    COPYABLE_AND_MOVABLE(StringError)
+    ~StringError() noexcept override;
 };
 
 /// @brief Converts QString to other types.

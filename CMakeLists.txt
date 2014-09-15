@@ -54,12 +54,14 @@ libraryWithTestsFindQt(Qt5Core . QTCORE)
 set(Sources_Path src)
 
 include_directories(
+    ${PATH_TO_CMAKE_MODULES}/include
     ${${Target_Name}_PublicHeaders_Path}
     ${${Target_Name}_PublicHeaders_Path}/${Target_Name}
 )
 
 set(Sources
-    ${Sources_Path}/String.cpp ${Sources_Path}/Miscellaneous.cpp
+    ${Sources_Path}/Error.cpp ${Sources_Path}/String.cpp
+    ${Sources_Path}/Miscellaneous.cpp
 )
 
 
@@ -75,11 +77,10 @@ set_target_properties(${Target_Name} PROPERTIES PUBLIC_HEADER
 
 if(ENABLE_TESTING)
     include(vedgTools/EnableAutomocInSources)
-    include_directories(${PATH_TO_CMAKE_MODULES}/include)
 
     include(vedgTools/LibraryAddTest)
     libraryAddTest("StringTest" test/StringTest.cpp ${Target_Name})
-    libraryAddTest("ValidationTest" test/ValidationTest.cpp "")
+    libraryAddTest("ValidationTest" test/ValidationTest.cpp ${Target_Name})
 endif()
 
 
