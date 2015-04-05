@@ -41,7 +41,7 @@ add_definitions(
 message("QtUtilities_False_String = \"${QtUtilities_False_String}\"")
 message("QtUtilities_True_String = \"${QtUtilities_True_String}\"")
 if(QtUtilities_False_String STREQUAL QtUtilities_True_String)
-    message(FATAL_ERROR "False_String must not be equal to True_String!")
+    message(FATAL_ERROR "False_String may not be equal to True_String!")
 endif()
 
 include(vedgTools/LibraryWithQtInit)

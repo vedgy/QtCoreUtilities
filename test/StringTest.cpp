@@ -1,6 +1,6 @@
 /*
  This file is part of vedgTools/QtCoreUtilities.
- Copyright (C) 2014 Igor Kushnir <igorkuo AT Google mail>
+ Copyright (C) 2014, 2015 Igor Kushnir <igorkuo AT Google mail>
 
  vedgTools/QtCoreUtilities is free software: you can redistribute it and/or
  modify it under the terms of the GNU General Public License as published by
@@ -38,19 +38,19 @@ Q_DECLARE_METATYPE(std::string)
 
 namespace QTest
 {
-template<>
+template <>
 char * toString(const std::string & str)
 {
     return qstrdup(str.c_str());
 }
 
-template<>
+template <>
 char * toString(const signed char & n)
 {
     return toString(std::to_string(int(n)));
 }
 
-template<>
+template <>
 char * toString(const unsigned char & n)
 {
     return toString(std::to_string(int(n)));
@@ -96,11 +96,11 @@ struct BidirectionalTest {
     void operator()(const Test & test) const;
 };
 
-template <template<class> class F, class TestCollection>
+template < template<class> class F, class TestCollection >
 void signedCollectionTest(const TestCollection & collection);
-template <template<class> class F, class TestCollection>
+template < template<class> class F, class TestCollection >
 void unsignedCollectionTest(const TestCollection & collection);
-template <template<class> class F, class TestCollection>
+template < template<class> class F, class TestCollection >
 void floatingPointCollectionTest(const TestCollection & collection);
 
 void signedBidirectionalTest(const std::vector<Test> & tests);
@@ -240,10 +240,12 @@ void BidirectionalTest<Integral>::operator()(const Test & test) const
 }
 
 
-template < template<class> class F, class TestCollection>
+template < template<class> class F, class TestCollection >
 void signedCollectionTest(const TestCollection & collection)
 {
-    std::for_each(std::begin(collection), std::end(collection),
+    using std::begin;
+    using std::end;
+    std::for_each(begin(collection), end(collection),
     [](typename TestCollection::const_reference t) {
         F<signed char>()(t);
         F<short>()(t);
@@ -253,10 +255,12 @@ void signedCollectionTest(const TestCollection & collection)
     });
 }
 
-template <template<class> class F, class TestCollection>
+template < template<class> class F, class TestCollection >
 void unsignedCollectionTest(const TestCollection & collection)
 {
-    std::for_each(std::begin(collection), std::end(collection),
+    using std::begin;
+    using std::end;
+    std::for_each(begin(collection), end(collection),
     [](typename TestCollection::const_reference t) {
         F<unsigned char>()(t);
         F<unsigned short>()(t);
@@ -266,10 +270,12 @@ void unsignedCollectionTest(const TestCollection & collection)
     });
 }
 
-template <template<class> class F, class TestCollection>
+template < template<class> class F, class TestCollection >
 void floatingPointCollectionTest(const TestCollection & collection)
 {
-    std::for_each(std::begin(collection), std::end(collection),
+    using std::begin;
+    using std::end;
+    std::for_each(begin(collection), end(collection),
     [](typename TestCollection::const_reference t) {
         F<float>()(t);
         F<double>()(t);
